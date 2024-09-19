@@ -54,12 +54,18 @@ class Performance(models.Model):
     show_time = models.DateTimeField()
 
     def __str__(self) -> str:
-        return f"{self.play.name} at {self.theatre_hall.name} on {self.date} at {self.time}"
+        return f"{self.play.name} at {self.theatre_hall.name} on {self.show_time}"
 
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.created_at)
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
