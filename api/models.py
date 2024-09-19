@@ -50,8 +50,7 @@ class Performance(models.Model):
         Play, on_delete=models.CASCADE, related_name="performances"
     )
     theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
+    show_time = models.DateTimeField()
 
     def __str__(self) -> str:
         return f"{self.play.name} at {self.theatre_hall.name} on {self.date} at {self.time}"
