@@ -22,6 +22,7 @@ from api.serializers import (
     PlayListDetailSerializer,
     ReservationListSerializer, PerformanceListSerializer,
 )
+from api.pagination import OrderPagination
 
 
 class GenreViewSet(
@@ -139,6 +140,7 @@ class ReservationViewSet(
         "tickets__performance__theatre_hall"
     )
     serializer_class = ReservationSerializer
+    pagination_class = OrderPagination
 
     def get_queryset(self):
         if self.action == "list":
