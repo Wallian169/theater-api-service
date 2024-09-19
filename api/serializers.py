@@ -68,6 +68,17 @@ class PerformanceListSerializer(PerformanceSerializer):
         slug_field="name",
         read_only=True,
     )
+    tickets_available = serializers.IntegerField()
+
+    class Meta:
+        model = Performance
+        fields = ("id", "play", "theatre_hall", "tickets_available")
+
+
+class PerformanceInTicketSerializer(PerformanceListSerializer):
+    class Meta:
+        model = Performance
+        fields = ("id", "play", "theatre_hall", "show_time")
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -87,7 +98,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class TicketListSerializer(TicketSerializer):
-    performance = PerformanceListSerializer(many=False, read_only=True)
+    performance = PerformanceInTicketSerializer(many=False, read_only=True)
 
 
 class ReservationSerializer(serializers.ModelSerializer):
