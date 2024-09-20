@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db.models import F, Count
 from rest_framework import viewsets, mixins
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from api.models import (
@@ -12,6 +13,7 @@ from api.models import (
     Performance,
     Reservation,
 )
+from api.permissions import IsAdminOrIfAuthenticatedReadOnly
 from api.serializers import (
     GenreSerializer,
     ActorSerializer,
@@ -34,6 +36,7 @@ class GenreViewSet(
 ):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class ActorViewSet(
@@ -45,11 +48,13 @@ class ActorViewSet(
 ):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.all().prefetch_related("actors", "genres")
     serializer_class = PlaySerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -93,6 +98,7 @@ class TheatreHallViewSet(
 ):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
@@ -107,6 +113,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         )
     )
     serializer_class = PerformanceSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
@@ -141,6 +148,7 @@ class ReservationViewSet(
     )
     serializer_class = ReservationSerializer
     pagination_class = OrderPagination
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if self.action == "list":
