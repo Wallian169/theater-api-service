@@ -1,4 +1,8 @@
+import os
+import uuid
+
 from django.conf import settings
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.db import models
 from rest_framework.exceptions import ValidationError
@@ -46,12 +50,24 @@ class TheatreHall(models.Model):
         return self.name
 
 
+def poster_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.play.name)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("uploads/posters/", filename)
+
+
 class Performance(models.Model):
     play = models.ForeignKey(
         Play, on_delete=models.CASCADE, related_name="performances"
     )
     theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
     show_time = models.DateTimeField()
+    poster = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to=poster_image_file_path
+    )
 
     def __str__(self) -> str:
         return f"{self.play.name} at {self.theatre_hall.name} on {self.show_time}"
