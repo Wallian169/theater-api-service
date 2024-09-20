@@ -1,8 +1,10 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from rest_framework import viewsets, mixins
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, mixins, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from api.models import (
@@ -22,7 +24,9 @@ from api.serializers import (
     PerformanceSerializer,
     ReservationSerializer,
     PlayListDetailSerializer,
-    ReservationListSerializer, PerformanceListSerializer,
+    ReservationListSerializer,
+    PerformanceListSerializer,
+    PerformancePosterSerializer,
 )
 from api.pagination import OrderPagination
 
@@ -115,6 +119,21 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     serializer_class = PerformanceSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="upload-image",
+        permission_classes=[IsAdminUser],
+    )
+    def upload_image(self, request, pk=None):
+        """Endpoint for uploading image to specific movie"""
+        movie = self.get_object()
+        serializer = self.get_serializer(movie, data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def get_queryset(self):
         date = self.request.query_params.get("date")
         name = self.request.query_params.get("name")
@@ -133,6 +152,8 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
             return PerformanceListSerializer
+        if self.action == "upload_image":
+            return PerformancePosterSerializer
 
         return self.serializer_class
 

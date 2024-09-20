@@ -72,13 +72,19 @@ class PerformanceListSerializer(PerformanceSerializer):
 
     class Meta:
         model = Performance
-        fields = ("id", "play", "theatre_hall", "tickets_available")
+        fields = ("id", "play", "theatre_hall", "poster", "tickets_available")
 
 
 class PerformanceInTicketSerializer(PerformanceListSerializer):
     class Meta:
         model = Performance
         fields = ("id", "play", "theatre_hall", "show_time")
+
+
+class PerformancePosterSerializer(PerformanceSerializer):
+    class Meta:
+        model = Performance
+        fields = ("id", "poster")
 
 
 class TicketSerializer(serializers.ModelSerializer):
