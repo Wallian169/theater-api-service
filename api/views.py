@@ -151,8 +151,8 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     )
     def upload_image(self, request, pk=None):
         """Endpoint for uploading poster to specific Performance"""
-        movie = self.get_object()
-        serializer = self.get_serializer(movie, data=request.data)
+        performance = self.get_object()
+        serializer = self.get_serializer(performance, data=request.data)
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
