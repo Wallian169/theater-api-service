@@ -9,7 +9,7 @@ from api.models import (
     Performance,
     TheatreHall, Genre, Actor,
 )
-from api.serializers import PlaySerializer, PlayListDetailSerializer
+from api.serializers import PlayListDetailSerializer
 
 PLAY_URL = reverse("api:play-list")
 PERFORMANCE_URL = reverse("api:performance-list")
